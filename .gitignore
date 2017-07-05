@@ -1,0 +1,8 @@
+css/*.css
+
+.*.sw*
+.sass-cache
+*.css.map
+
+*.orig
+*~
