@@ -15,7 +15,7 @@
 		 */
 		constructor(vertical, horizontal, ...elements)
 		{
-			throw 'Not implemented';
+			$.error('Not implemented');
 		}
 
 		/**
@@ -25,7 +25,7 @@
 		 */
 		_onScroll(event)
 		{
-			throw 'Not implemented';
+			$.error('Not implemented');
 		}
 	}
 
@@ -43,14 +43,15 @@
 		constructor(start, end, editor = false)
 		{
 			if (start >= end) {
-				throw 'Invalid parameters: start must lie before end';
+				$.error('Invalid parameters: start must lie before end');
 			}
 
 			if (editor) {
-				throw 'Not implemented';
+				$.error('Not implemented');
 			}
 
-			super();
+			$.error('Not implemented');
+		}
 
 			throw 'Not implemented';
 		}
@@ -62,7 +63,7 @@
 		 */
 		loadData(data)
 		{
-			throw 'Not implemented';
+			$.error('Not implemented');
 		}
 
 		/**
@@ -72,7 +73,7 @@
 		 */
 		saveData()
 		{
-			throw 'Not implemented';
+			$.error('Not implemented');
 		}
 
 		/**
@@ -80,7 +81,7 @@
 		 */
 		reset()
 		{
-			throw 'Not implemented';
+			$.error('Not implemented');
 		}
 
 		/**
@@ -88,7 +89,7 @@
 		 */
 		download()
 		{
-			throw 'Not implemented';
+			$.error('Not implemented');
 		}
 
 		/**
@@ -101,7 +102,7 @@
 		 */
 		addTask(name, position = Infinity)
 		{
-			throw 'Not implemented';
+			$.error('Not implemented');
 		}
 
 		/**
@@ -114,7 +115,7 @@
 		 */
 		addTimeSlot(start = -Infinity, end = Infinity, effort = 1, task = Infinity)
 		{
-			throw 'Not implemented';
+			$.error('Not implemented');
 		}
 
 		/**
@@ -129,7 +130,7 @@
 		 */
 		addDeadline(deadline, from_task = Infinity, to_task = from_task, type = 'Hard')
 		{
-			throw 'Not implemented';
+			$.error('Not implemented');
 		}
 	};
 
