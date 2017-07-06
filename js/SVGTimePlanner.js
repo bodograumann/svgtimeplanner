@@ -29,8 +29,24 @@
 		}
 	}
 
-	Canaaerus.SVGTimePlanner = class SVGTimePlanner extends HTMLElement
+	Canaaerus.SVGTimePlanner = class SVGTimePlanner
 	{
+		/**
+		 * Autoload planners where the SVGTimePlanner css class is set
+		 */
+		static autoload()
+		{
+			$('.SVGTimePlanner').each(
+				(index, element) => {
+					let planner = new Canaaerus.SVGTimePlanner(
+						new Date(element.dataset.start),
+						new Date(element.dataset.end)
+					);
+					element.append(planner.container);
+				}
+			);
+		}
+
 		/**
 		 * Create a new empty planner
 		 *
@@ -53,7 +69,14 @@
 			$.error('Not implemented');
 		}
 
-			throw 'Not implemented';
+		/**
+		 * Get the DOM container element
+		 *
+		 * @return {HTMLElement}
+		 */
+		get container()
+		{
+			$.error('Not implemented');
 		}
 
 		/**
@@ -133,5 +156,8 @@
 			$.error('Not implemented');
 		}
 	};
+
+	/** Invoke autoload */
+	$(Canaaerus.SVGTimePlanner.autoload);
 
 })(window.Canaaerus = window.Canaaerus || {}, jQuery, Snap);
