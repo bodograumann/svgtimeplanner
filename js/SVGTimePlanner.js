@@ -1,6 +1,6 @@
 /* globals jQuery, Snap */
 
-(function(Canaerus, $, Snap)
+(function(Canaaerus, $, Snap)
 {
 	'use strict';
 
@@ -29,7 +29,7 @@
 		}
 	}
 
-	Canaerus.SVGTimePlanner = class SVGTimePlanner extends HTMLElement
+	Canaaerus.SVGTimePlanner = class SVGTimePlanner extends HTMLElement
 	{
 		/**
 		 * Create a new empty planner
@@ -133,4 +133,4 @@
 		}
 	};
 
-})(window.Canaerus = window.Canaerus || {}, jQuery, Snap);
+})(window.Canaaerus = window.Canaaerus || {}, jQuery, Snap);
