@@ -4,7 +4,7 @@
 {
 	'use strict';
 
-	class ScrollSynchronizer
+	class ScrollSynchronize
 	{
 		/**
 		 * Synchronize the scroll offsets of some DOM Elements
@@ -24,6 +24,32 @@
 		 * @param {Event} event - scroll event
 		 */
 		_onScroll(event)
+		{
+			$.error('Not implemented');
+		}
+	}
+
+	class TimeScale
+	{
+		/**
+		 * Create a new time scale with adaptive labels
+		 *
+		 * @param {Date} start
+		 * @param {Date} end
+		 */
+		constructor(start, end)
+		{
+			$.error('Not implemented');
+		}
+
+		/**
+		 * Create svg elements
+		 *
+		 * @param {Paper} Snap.svg paper
+		 *
+		 * @return {Element}
+		 */
+		draw(paper)
 		{
 			$.error('Not implemented');
 		}
@@ -67,8 +93,14 @@
 				$.error('Not implemented');
 			}
 
-			this._container = $(container) || $('<div>');
+			this._container = $(container || '<div>');
 			this._container.addClass('SVGTimePlanner');
+
+			this.diagram = Snap(1800, 1112);
+			this._container.append(this.diagram);
+
+			this.scale = new TimeScale(start, end).draw(this.diagram);
+			this.diagram.append(this.scale);
 		}
 
 		/**
