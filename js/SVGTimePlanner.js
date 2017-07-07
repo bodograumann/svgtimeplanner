@@ -38,11 +38,12 @@
 		{
 			$('.SVGTimePlanner').each(
 				(index, element) => {
-					let planner = new Canaaerus.SVGTimePlanner(
+					new Canaaerus.SVGTimePlanner(
 						new Date(element.dataset.start),
-						new Date(element.dataset.end)
+						new Date(element.dataset.end),
+						Boolean(element.dataset.edit),
+						element
 					);
-					element.append(planner.container);
 				}
 			);
 		}
@@ -56,7 +57,7 @@
 		 * @param {Date} end
 		 * @param {Boolean} editor - Enable editor controls
 		 */
-		constructor(start, end, editor = false)
+		constructor(start, end, editor = false, container = null)
 		{
 			if (start >= end) {
 				$.error('Invalid parameters: start must lie before end');
@@ -66,7 +67,8 @@
 				$.error('Not implemented');
 			}
 
-			$.error('Not implemented');
+			this._container = $(container) || $('<div>');
+			this._container.addClass('SVGTimePlanner');
 		}
 
 		/**
@@ -76,7 +78,7 @@
 		 */
 		get container()
 		{
-			$.error('Not implemented');
+			return this._container;
 		}
 
 		/**
