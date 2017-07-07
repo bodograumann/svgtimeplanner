@@ -4,31 +4,6 @@
 {
 	'use strict';
 
-	class ScrollSynchronize
-	{
-		/**
-		 * Synchronize the scroll offsets of some DOM Elements
-		 *
-		 * @param {Boolean} vertical - Synchronize vertical scroll offset
-		 * @param {Boolean} horizontal - Synchronize horizontal scroll offset
-		 * @param {HTMLElement[]} elements - DOM Elements
-		 */
-		constructor(vertical, horizontal, ...elements)
-		{
-			$.error('Not implemented');
-		}
-
-		/**
-		 * Handle scroll events
-		 *
-		 * @param {Event} event - scroll event
-		 */
-		_onScroll(event)
-		{
-			$.error('Not implemented');
-		}
-	}
-
 	class TimeScale
 	{
 		/**
