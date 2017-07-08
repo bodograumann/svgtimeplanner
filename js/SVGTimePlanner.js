@@ -14,7 +14,8 @@
 		 */
 		constructor(start, end)
 		{
-			$.error('Not implemented');
+			this.start = start;
+			this.end = end;
 		}
 
 		/**
@@ -26,7 +27,70 @@
 		 */
 		draw(paper)
 		{
-			$.error('Not implemented');
+			/** milliseconds per svg user user unit */
+			const scaling = 60*60*1000 / 30;
+
+			var group = paper.g().addClass('TimeScale');
+
+			var day_group = paper.g().addClass('Days').appendTo(group);
+			for (let [start, end] of this.days()) {
+				let middle = (Number(start) + Number(end)) / 2;
+				paper.text(
+					(middle - this.start) / scaling,
+					0,
+					start.getDate() + '.' + String(start.getMonth()+1).padStart(2, '0') + '.'
+				)
+					.appendTo(day_group);
+			}
+
+			var hour_group = paper.g().addClass('Hours').appendTo(group);
+			for (let tick of this.hours()) {
+				paper.text(
+					(tick - this.start) / scaling,
+					0,
+					tick.getHours() + ':' + String(tick.getMinutes()).padStart(2, '0')
+				)
+					.appendTo(hour_group);
+			}
+		}
+
+		/**
+		 * Iterate over all days in the time interval
+		 *
+		 * @yield {[Date, Date]} day start and end restricted to interval
+		 */
+		*days()
+		{
+			var first = new Date(this.start).setHours(0, 0, 0, 0);
+			var start = this.start, end;
+
+			for (
+				let idx = 1;
+				(end = new Date(first + idx*24*60*60*1000)) < this.end;
+				idx++
+			) {
+				yield [start, end];
+				start = end;
+			}
+			yield [start, this.end];
+		}
+
+		/**
+		 * Iterate over whole hours in the time interval
+		 *
+		 * @yield {Date} hour tick
+		 */
+		*hours()
+		{
+			var first = new Date(this.start).setMinutes(0, 0, 0);
+			var tick;
+			for (
+				let idx = first >= this.start ? 0 : 1;
+				(tick = new Date(first + idx*60*60*1000)) <= this.end;
+				idx++
+			) {
+				yield tick;
+			}
 		}
 	}
 
@@ -72,7 +136,7 @@
 			this._container.addClass('SVGTimePlanner');
 
 			this.diagram = Snap(1800, 1112);
-			this._container.append(this.diagram);
+			this._container.get(0).appendChild(this.diagram.node);
 
 			this.scale = new TimeScale(start, end).draw(this.diagram);
 			this.diagram.append(this.scale);

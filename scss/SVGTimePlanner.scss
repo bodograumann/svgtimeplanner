@@ -1,0 +1,18 @@
+.SVGTimePlanner
+{
+	.TimeScale
+	{
+		font-size: 0.7rem;
+		text-anchor: middle;
+		transform: translateX(2em);
+
+		.Days
+		{
+			transform: translateY(1em);
+		}
+		.Hours
+		{
+			transform: translateY(2em);
+		}
+	}
+}
