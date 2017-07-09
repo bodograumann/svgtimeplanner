@@ -1,17 +1,22 @@
-.SVGTimePlanner
-{
-	.TimeScale
-	{
+.SVGTimePlanner {
+	$row_head_width: 20rem;
+	$column_head_height: 2rem;
+	%Columns {
+		transform: translateX($row_head_width + 2rem);
+	}
+	%Rows	{
+		transform: translateY($column_head_height + 1rem);
+	}
+
+	.TimeScale {
+		@extend %Columns;
 		font-size: 0.7rem;
 		text-anchor: middle;
-		transform: translateX(2em);
 
-		.Days
-		{
+		.Days {
 			transform: translateY(1em);
 		}
-		.Hours
-		{
+		.Hours {
 			transform: translateY(2em);
 		}
 	}
