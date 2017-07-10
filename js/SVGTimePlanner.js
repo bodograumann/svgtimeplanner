@@ -103,12 +103,18 @@
 		{
 			$('.SVGTimePlanner').each(
 				(index, element) => {
-					new Canaaerus.SVGTimePlanner(
+					let content = $(element).text();
+					$(element).text('');
+					let planner = new Canaaerus.SVGTimePlanner(
 						new Date(element.dataset.start),
 						new Date(element.dataset.end),
 						Boolean(element.dataset.edit),
 						element
 					);
+
+					if (content) {
+						planner.loadData(JSON.parse(content));
+					}
 				}
 			);
 		}

@@ -2,18 +2,34 @@
 <html>
 
 <head>
-	<meta charset="utf-8" />
+  <meta charset="utf-8">
+  <meta name="author" content="Bodo Graumann">
 
-	<meta http-equiv="content-language" content="de-DE">
-	<meta name="author" content="Bodo Graumann">
+  <link rel="stylesheet" href="css/SVGTimePlanner.css">
 
-	<link rel="stylesheet" href="css/SVGTimePlanner.css">
-
-	<title>SVGTimePlanner — Editor</title>
+  <title>SVGTimePlanner — Editor</title>
 </head>
 
 <body>
-  <div id="planner" class="SVGTimePlanner" data-start="2017-09-23T07:00" data-end="2017-09-24T19:00"></div>
+  <div id="planner" class="SVGTimePlanner" data-start="2017-09-23T07:00" data-end="2017-09-24T19:00">
+    {
+      "tasks": [
+        {
+          "name": "Test 1",
+          "slots": [
+            { "from": "2017-09-23T09:34", "to": "2017-09-23T13:00" }
+          ]
+        },
+        {
+          "name": "Test 2",
+          "slots": [
+            { "from": "2017-09-23T11:02", "to": "2017-09-23T12:00", "effort": 2 },
+            { "from": "2017-09-23T12:00", "to": "2017-09-23T15:00", "effort": 3 }
+          ]
+        }
+      ]
+    }
+  </div>
 
   <script src="deps/jquery-3.2.1.min.js"></script>
   <script src="deps/snap-0.5.1.svg-min.js"></script>
