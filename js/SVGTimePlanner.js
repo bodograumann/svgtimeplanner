@@ -354,10 +354,11 @@
 			for (let idx = 0; idx < effort; idx++) {
 				const y = middle + (idx - (effort - 1)/2) * interval;
 
+				/** Note the 1.125 correction terms for rounded linecaps, depending on the css */
 				this.diagram.line(
-					this.scale.getOffset(start),
+					this.scale.getOffset(start) + 1.125,
 					y,
-					this.scale.getOffset(end),
+					this.scale.getOffset(end) - 1.125,
 					y
 				).appendTo(task.body);
 			}
