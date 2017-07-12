@@ -1,23 +1,32 @@
 .SVGTimePlanner {
 	$row_head_width: 20rem;
 	$column_head_height: 2rem;
-	%Columns {
-		transform: translateX($row_head_width + 2rem);
-	}
-	%Rows	{
-		transform: translateY($column_head_height + 1rem);
-	}
+
+	$column_transform: translateX($row_head_width + 2rem);
+	$row_transform: translateY($column_head_height + 1rem);
 
 	.TimeScale {
-		@extend %Columns;
 		font-size: 0.7rem;
 		text-anchor: middle;
+		transform: $column_transform;
 
 		.Days {
 			transform: translateY(1em);
 		}
 		.Hours {
 			transform: translateY(2em);
+		}
+	}
+
+	.TaskList {
+		transform: $row_transform;
+	}
+
+	.TimeSlotGrid {
+		transform: $column_transform $row_transform;
+
+		line {
+			stroke: #000;
 		}
 	}
 }

@@ -16,6 +16,21 @@
 		{
 			this.start = start;
 			this.end = end;
+
+			/** milliseconds per svg user user unit */
+			this.scaling = 60*60*1000 / 30;
+		}
+
+		/**
+		 * Get horizontal offset for a point in time
+		 *
+		 * @param {Date} date
+		 *
+		 * @return {Number}
+		 */
+		getOffset(date)
+		{
+			return (date - this.start) / this.scaling;
 		}
 
 		/**
@@ -27,31 +42,30 @@
 		 */
 		draw(paper)
 		{
-			/** milliseconds per svg user user unit */
-			const scaling = 60*60*1000 / 30;
+			const group = paper.g().addClass('TimeScale');
 
-			var group = paper.g().addClass('TimeScale');
-
-			var day_group = paper.g().addClass('Days').appendTo(group);
-			for (let [start, end] of this.days()) {
-				let middle = (Number(start) + Number(end)) / 2;
+			const day_group = paper.g().addClass('Days').appendTo(group);
+			for (const [start, end] of this.days()) {
+				const middle = (Number(start) + Number(end)) / 2;
 				paper.text(
-					(middle - this.start) / scaling,
+					this.getOffset(middle),
 					0,
 					start.getDate() + '.' + String(start.getMonth()+1).padStart(2, '0') + '.'
 				)
 					.appendTo(day_group);
 			}
 
-			var hour_group = paper.g().addClass('Hours').appendTo(group);
-			for (let tick of this.hours()) {
+			const hour_group = paper.g().addClass('Hours').appendTo(group);
+			for (const tick of this.hours()) {
 				paper.text(
-					(tick - this.start) / scaling,
+					this.getOffset(tick),
 					0,
 					tick.getHours() + ':' + String(tick.getMinutes()).padStart(2, '0')
 				)
 					.appendTo(hour_group);
 			}
+
+			return group;
 		}
 
 		/**
@@ -61,7 +75,7 @@
 		 */
 		*days()
 		{
-			var first = new Date(this.start).setHours(0, 0, 0, 0);
+			const first = new Date(this.start).setHours(0, 0, 0, 0);
 			var start = this.start, end;
 
 			for (
@@ -82,7 +96,7 @@
 		 */
 		*hours()
 		{
-			var first = new Date(this.start).setMinutes(0, 0, 0);
+			const first = new Date(this.start).setMinutes(0, 0, 0);
 			var tick;
 			for (
 				let idx = first >= this.start ? 0 : 1;
@@ -90,6 +104,95 @@
 				idx++
 			) {
 				yield tick;
+			}
+		}
+	}
+
+	class TaskList extends Array
+	{
+		/**
+		 * Create new list of tasks
+		 *
+		 * @param {Paper} Snap.svg paper
+		 */
+		constructor(paper)
+		{
+			super();
+
+			this._row_height = 15;
+
+			this.paper = paper;
+			this.head = paper.g().addClass('TaskList');
+			this.body = paper.g().addClass('TimeSlotGrid');
+
+			paper.append(this.head);
+			paper.append(this.body);
+		}
+
+		/**
+		 * Create a new list element at a certain position
+		 *
+		 * @param {Number} position
+		 *
+		 * @return {Object} new row with keys 'head' and 'body'
+		 */
+		insertNew(position = Infinity)
+		{
+			const elements = {
+				head: this.paper.g(),
+				body: this.paper.g()
+			};
+			if (position >= this.length) {
+				position = this.length;
+				elements.head.appendTo(this.head);
+				elements.body.appendTo(this.body);
+				super.push(elements);
+			} else {
+				position = Math.max(0, position);
+				elements.head.insertBefore(this[position].head);
+				elements.body.insertBefore(this[position].body);
+				super.splice(position, 0, elements);
+			}
+
+			this._updateOffsets(position, this.length - 1);
+
+			return elements;
+		}
+
+		/**
+		 * Get height of one row
+		 *
+		 * @return {Number}
+		 */
+		get row_height()
+		{
+			return this._row_height;
+		}
+
+		/**
+		 * Calculate vertical offset of row in svg user units
+		 *
+		 * @param {Number} position - defaults to last row
+		 *
+		 * @return {Number} vertical offset
+		 */
+		getOffset(position = this.length - 1)
+		{
+			return position * this.row_height;
+		}
+
+		/**
+		 * Set offsets on a range of rows
+		 *
+		 * @param {Number} start - first row
+		 * @param {Number} end - last row
+		 */
+		_updateOffsets(start, end)
+		{
+			for (let idx = start; idx <= end; idx++) {
+				const transformation = `t0,${idx*this.row_height}`;
+				this[idx].head.transform(transformation);
+				this[idx].body.transform(transformation);
 			}
 		}
 	}
@@ -103,9 +206,9 @@
 		{
 			$('.SVGTimePlanner').each(
 				(index, element) => {
-					let content = $(element).text();
+					const content = $(element).text();
 					$(element).text('');
-					let planner = new Canaaerus.SVGTimePlanner(
+					const planner = new Canaaerus.SVGTimePlanner(
 						new Date(element.dataset.start),
 						new Date(element.dataset.end),
 						Boolean(element.dataset.edit),
@@ -144,8 +247,10 @@
 			this.diagram = Snap(1800, 1112);
 			this._container.get(0).appendChild(this.diagram.node);
 
-			this.scale = new TimeScale(start, end).draw(this.diagram);
-			this.diagram.append(this.scale);
+			this.scale = new TimeScale(start, end);
+			this.diagram.append(this.scale.draw(this.diagram));
+
+			this.tasks = new TaskList(this.diagram);
 		}
 
 		/**
@@ -165,7 +270,21 @@
 		 */
 		loadData(data)
 		{
-			$.error('Not implemented');
+			for (const task of data.tasks || []) {
+				this.addTask(String(task.name));
+
+				for (const slot of task.slots || []) {
+					this.addTimeSlot(
+						new Date(slot.from),
+						new Date(slot.to),
+						Number(slot.effort || 1)
+					);
+				}
+			}
+
+			if (data.deadlines) {
+				$.error('Not implemented');
+			}
 		}
 
 		/**
@@ -204,7 +323,10 @@
 		 */
 		addTask(name, position = Infinity)
 		{
-			$.error('Not implemented');
+			const task = this.tasks.insertNew();
+			task.name = name;
+			this.diagram.text(0, 0, name)
+				.appendTo(task.head);
 		}
 
 		/**
@@ -213,11 +335,25 @@
 		 * @param {Date} start - Start of the time slot; defaults to start of plan
 		 * @param {Date} end - Start of the time slot; defaults to end of plan
 		 * @param {Number} effort - Required effort for the task, e.g. headcount
-		 * @param {Number} task - Position of the task; defaults to last one
+		 * @param {Number} task_position - Position of the task; defaults to last one
 		 */
-		addTimeSlot(start = -Infinity, end = Infinity, effort = 1, task = Infinity)
+		addTimeSlot(start = -Infinity, end = Infinity, effort = 1, task_position = Infinity)
 		{
-			$.error('Not implemented');
+			const task = this.tasks[Math.max(0, Math.min(task_position, this.tasks.length - 1))];
+			const middle = this.tasks.row_height / 2;
+			const φ = (1+Math.sqrt(5))/2;
+			const interval = this.tasks.row_height / φ / Math.max(effort - 1, φ);
+
+			for (let idx = 0; idx < effort; idx++) {
+				const y = middle + (idx - (effort - 1)/2) * interval;
+
+				this.diagram.line(
+					this.scale.getOffset(start),
+					y,
+					this.scale.getOffset(end),
+					y
+				).appendTo(task.body);
+			}
 		}
 
 		/**
