@@ -4,8 +4,6 @@
 {
 	'use strict';
 
-	const total_width = 1800;
-
 	class TimeScale
 	{
 		/**
@@ -46,7 +44,7 @@
 		{
 			const group = paper.g().addClass('TimeScale');
 
-			const day_group = paper.g().addClass('Days').appendTo(group);
+			const day_group = paper.g().addClass('Days').prependTo(group);
 			for (const [start, end] of this.days()) {
 				const middle = (Number(start) + Number(end)) / 2;
 				paper.text(
@@ -55,15 +53,26 @@
 					start.getDate() + '.' + String(start.getMonth()+1).padStart(2, '0') + '.'
 				)
 					.appendTo(day_group);
+
+				if (start > this.start) {
+					const x = this.getOffset(start);
+					paper.line(x, 0, x, '1em')
+						.appendTo(day_group);
+					paper.line(x, '2.2em', x, '100%')
+						.appendTo(day_group);
+				}
 			}
 
-			const hour_group = paper.g().addClass('Hours').appendTo(group);
+			const hour_group = paper.g().addClass('Hours').prependTo(group);
 			for (const tick of this.hours()) {
 				paper.text(
 					this.getOffset(tick),
 					0,
 					tick.getHours() + ':' + String(tick.getMinutes()).padStart(2, '0')
 				)
+					.appendTo(hour_group);
+				const x = this.getOffset(tick);
+				paper.line(x, '1.2em', x, '100%')
 					.appendTo(hour_group);
 			}
 
@@ -127,7 +136,7 @@
 			this.head = paper.g().addClass('TaskList');
 			this.body = paper.g().addClass('TimeSlotGrid');
 
-			paper.append(this.head);
+			paper.prepend(this.head);
 			paper.append(this.body);
 		}
 
@@ -145,7 +154,7 @@
 				body: this.paper.g()
 			};
 
-			this.paper.rect(0, 0, total_width, this.row_height)
+			this.paper.rect(0, 0, '100%', this.row_height)
 				.addClass('Background')
 				.appendTo(elements.head);
 
@@ -251,7 +260,7 @@
 			this._container = $(container || '<div>');
 			this._container.addClass('SVGTimePlanner');
 
-			this.diagram = Snap(total_width, 1112);
+			this.diagram = Snap(1800, 1112);
 			this._container.get(0).appendChild(this.diagram.node);
 
 			this.scale = new TimeScale(start, end);
