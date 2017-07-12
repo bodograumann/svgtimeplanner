@@ -1,9 +1,23 @@
+$color_0_light: #fdfdfd;
+$color_0_dark: #040404;
+$color_1_light: #e8f0ff;
+
+html {
+	background-color: $color_0_light;
+	font-size: 14px;
+}
+
 .SVGTimePlanner {
 	$row_head_width: 20rem;
 	$column_head_height: 2rem;
 
 	$column_transform: translateX($row_head_width + 2rem);
 	$row_transform: translateY($column_head_height + 1rem);
+
+	text {
+		fill: $color_0_dark;
+		transform: translateY(1em);
+	}
 
 	.TimeScale {
 		font-size: 0.7rem;
@@ -20,6 +34,14 @@
 
 	.TaskList {
 		transform: $row_transform;
+
+		:nth-child(2n+1) .Background {
+			fill: $color_1_light;
+		}
+
+		:nth-child(2n) .Background {
+			fill: $color_0_light;
+		}
 	}
 
 	.TimeSlotGrid {

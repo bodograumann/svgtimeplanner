@@ -4,6 +4,8 @@
 {
 	'use strict';
 
+	const total_width = 1800;
+
 	class TimeScale
 	{
 		/**
@@ -119,7 +121,7 @@
 		{
 			super();
 
-			this._row_height = 15;
+			this._row_height = 20;
 
 			this.paper = paper;
 			this.head = paper.g().addClass('TaskList');
@@ -142,6 +144,11 @@
 				head: this.paper.g(),
 				body: this.paper.g()
 			};
+
+			this.paper.rect(0, 0, total_width, this.row_height)
+				.addClass('Background')
+				.appendTo(elements.head);
+
 			if (position >= this.length) {
 				position = this.length;
 				elements.head.appendTo(this.head);
@@ -244,7 +251,7 @@
 			this._container = $(container || '<div>');
 			this._container.addClass('SVGTimePlanner');
 
-			this.diagram = Snap(1800, 1112);
+			this.diagram = Snap(total_width, 1112);
 			this._container.get(0).appendChild(this.diagram.node);
 
 			this.scale = new TimeScale(start, end);
