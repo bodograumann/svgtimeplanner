@@ -1,7 +1,9 @@
 $color_0_lighter: #fdfdfd;
 $color_0_light: #d0d0d0;
-$color_0_dark: #040404;
-$color_1_light: #e8f0ff;
+$color_0_dark: #111;
+$color_1_light: #e3f2ff;
+$color_1: #5679aa;
+$color_1_dark: #001225;
 
 html {
 	background-color: $color_0_lighter;
@@ -65,9 +67,25 @@ html {
 		transform: $column_transform $row_transform;
 
 		line {
-			stroke: #000;
+			stroke: $color_0_dark;
 			stroke-width: 2.5;
 			stroke-linecap: round;
+		}
+	}
+
+	.Deadlines {
+		transform: $column_transform $row_transform;
+
+		stroke: $color_1;
+		stroke-linecap: round;
+
+		.HardDeadline {
+			stroke-width: 3;
+		}
+
+		.SoftDeadline {
+			stroke-width: 2;
+			stroke-dasharray: 4, 4;
 		}
 	}
 }

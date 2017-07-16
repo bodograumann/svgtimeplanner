@@ -267,6 +267,10 @@
 			this.diagram.append(this.scale.draw(this.diagram));
 
 			this.tasks = new TaskList(this.diagram);
+
+			this.deadlines = this.diagram.g()
+				.addClass('Deadlines')
+				.appendTo(this.diagram);
 		}
 
 		/**
@@ -296,10 +300,24 @@
 						Number(slot.effort || 1)
 					);
 				}
+
+				for (const deadline of task.deadlines || []) {
+					this.addDeadline(
+						new Date(deadline.at),
+						undefined,
+						undefined,
+						deadline.type
+					);
+				}
 			}
 
-			if (data.deadlines) {
-				$.error('Not implemented');
+			for (const deadline of data.deadlines || []) {
+				this.addDeadline(
+					new Date(deadline.at),
+					deadline.tasks[0],
+					deadline.tasks[1],
+					deadline.type
+				);
 			}
 		}
 
@@ -385,7 +403,17 @@
 		 */
 		addDeadline(deadline, from_task = Infinity, to_task = from_task, type = 'Hard')
 		{
-			$.error('Not implemented');
+			from_task = Math.max(0, Math.min(from_task, this.tasks.length - 1));
+			to_task = Math.max(from_task, Math.min(to_task, this.tasks.length - 1));
+
+			var x = this.scale.getOffset(deadline);
+			this.diagram.line(
+				x,
+				this.tasks.getOffset(from_task),
+				x,
+				this.tasks.getOffset(to_task + 1)
+			).addClass(type + 'Deadline')
+				.appendTo(this.deadlines);
 		}
 	};
 
