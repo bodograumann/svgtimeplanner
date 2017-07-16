@@ -264,7 +264,18 @@
 			this._container.get(0).appendChild(this.diagram.node);
 
 			this.scale = new TimeScale(start, end);
-			this.diagram.append(this.scale.draw(this.diagram));
+			var scale_box = this.scale.draw(this.diagram);
+			this.diagram.append(scale_box);
+
+			/**
+			 * Adjust width according to time scale
+			 *
+			 * In firefox this is buggy: https://bugzilla.mozilla.org/show_bug.cgi?id=1066435
+			 * The obvious Snap.svg method Element.getBBox does not yield the expected result.
+			 */
+			this.diagram.attr({
+				width: scale_box.node.getBoundingClientRect().right
+			});
 
 			this.tasks = new TaskList(this.diagram);
 
