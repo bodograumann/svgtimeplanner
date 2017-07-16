@@ -33,3 +33,7 @@ JSON-data from the body of a div with `class="SVGTimePlanner"` is autoloaded. Fo
       ]
     }
     </div>
+
+Results in the following (cut-out):
+
+![Example Timeplan](docs/Example1_Screenshot.png)
