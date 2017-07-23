@@ -279,7 +279,8 @@
 
 			this.tasks = new TaskList(this.diagram);
 
-			this.deadlines = this.diagram.g()
+			this.deadlines = [];
+			this.deadline_box = this.diagram.g()
 				.addClass('Deadlines')
 				.appendTo(this.diagram);
 		}
@@ -372,6 +373,19 @@
 			task.name = name;
 			this.diagram.text(0, 0, name)
 				.appendTo(task.head);
+
+
+			/** Update deadlines, streching multi-task deadlines over inserted tasks */
+			for (const deadline of this.deadlines) {
+				if (deadline.from >= position) {
+					deadline.from += 1;
+					deadline.element.y1 = this.tasks.getOffset(deadline.from);
+				}
+				if (deadline.to >= position) {
+					deadline.to += 1;
+					deadline.element.y2 = this.tasks.getOffset(deadline.to);
+				}
+			}
 		}
 
 		/**
@@ -418,13 +432,20 @@
 			to_task = Math.max(from_task, Math.min(to_task, this.tasks.length - 1));
 
 			var x = this.scale.getOffset(deadline);
-			this.diagram.line(
+			var element = this.diagram.line(
 				x,
 				this.tasks.getOffset(from_task),
 				x,
 				this.tasks.getOffset(to_task + 1)
 			).addClass(type + 'Deadline')
-				.appendTo(this.deadlines);
+				.appendTo(this.deadline_box);
+
+			this.deadlines.push({
+				from: from_task,
+				to: to_task,
+				type: type,
+				element: element
+			});
 		}
 	};
 
